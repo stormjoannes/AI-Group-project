@@ -9,7 +9,7 @@ mongo_client = MongoClient('localhost', 27017)
 
 # create new database and collection instance
 db = mongo_client.huwebshop
-col = db.products
+col = db.sessions
 
 # make an API call to the MongoDB server
 cursor = col.find()
@@ -43,7 +43,7 @@ for num, doc in enumerate(mongo_docs):
         print('\r' + str(num), end='')
 
 # export MongoDB documents to a CSV file
-docs.to_csv("productsdata.csv", ",") # CSV delimited by commas
+docs.to_csv("sessions.csv", ",") # CSV delimited by commas
 
 # export MongoDB documents to CSV
 csv_export = docs.to_csv(sep=",") # CSV delimited by commas
