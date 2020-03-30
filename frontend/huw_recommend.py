@@ -40,7 +40,7 @@ class Recom(Resource):
         query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
         data = cur.execute(query, (profileid, ))
         ids = cur.fetchall()
-        for i in data:
+        for i in ids:
             for x in i:
                 prodids.append(x)
 
