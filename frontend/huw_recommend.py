@@ -1,11 +1,15 @@
 from flask import Flask, request, session, render_template, redirect, url_for, g
 from flask_restful import Api, Resource, reqparse
 import os
+import psycopg2
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
 app = Flask(__name__)
 api = Api(app)
+
+conn = psycopg2.connect("dbname=onlinestore user=postgres password=roodwailord")
+cur = conn.cursor()
 
 # We define these variables to (optionally) connect to an external MongoDB
 # instance.
@@ -23,6 +27,7 @@ else:
     client = MongoClient()
 database = client.huwebshop 
 
+
 class Recom(Resource):
     """ This class represents the REST API that provides the recommendations for
     the webshop. At the moment, the API simply returns a random set of products
@@ -31,8 +36,15 @@ class Recom(Resource):
     def get(self, profileid, count):
         """ This function represents the handler for GET requests coming in
         through the API. It currently returns a random sample of products. """
-        randcursor = database.products.aggregate([{ '$sample': { 'size': count } }])
-        prodids = list(map(lambda x: x['_id'], list(randcursor)))
+        prodids = []
+        query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
+        hoi = cur.execute(query, (profileid, ))
+        doei = cur.fetchall()
+        # randcursor = database.products.aggregate([{ '$sample': {'size': count}}])
+        for i in doei:
+            for x in i:
+                prodids.append(x)
+
         return prodids, 200
 
 # This method binds the Recom class to the REST API, to parse specifically
