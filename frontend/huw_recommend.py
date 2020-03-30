@@ -33,12 +33,18 @@ class Recom(Resource):
     the webshop. At the moment, the API simply returns a random set of products
     to recommend."""
 
-    def get(self, profileid, count):
+    def get(self, profileid, prodid, count):
         """ This function represents the handler for GET requests coming in
         through the API. It currently returns a random sample of products. """
         prodids = []
-        query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
-        data = cur.execute(query, (profileid, ))
+
+        if prodid == 'None':
+            query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
+            data = cur.execute(query, (profileid, ))
+        else:
+            query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM product_recommendations WHERE id = %s"""
+            data = cur.execute(query, (prodid, ))
+
         ids = cur.fetchall()
         for i in ids:
             for x in i:
@@ -48,4 +54,5 @@ class Recom(Resource):
 
 # This method binds the Recom class to the REST API, to parse specifically
 # requests in the format described below.
-api.add_resource(Recom, "/<string:profileid>/<int:count>")
+
+api.add_resource(Recom, "/<string:profileid>/<int:count>/<string:prodid>")
