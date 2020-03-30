@@ -38,10 +38,9 @@ class Recom(Resource):
         through the API. It currently returns a random sample of products. """
         prodids = []
         query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
-        hoi = cur.execute(query, (profileid, ))
-        doei = cur.fetchall()
-        # randcursor = database.products.aggregate([{ '$sample': {'size': count}}])
-        for i in doei:
+        data = cur.execute(query, (profileid, ))
+        ids = cur.fetchall()
+        for i in data:
             for x in i:
                 prodids.append(x)
 
