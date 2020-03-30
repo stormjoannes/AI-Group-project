@@ -2,7 +2,7 @@
 
 ### How to start frontend
 
-1.  Open two **NEW** terminals
+1.  Open two **NEW** terminals and go to the project folder
 2.  In both terminals go to the frontend folder using `cd frontend`
 3.  In one terminal use the following commands:
        *    `set FLASK_APP=huw.py`
