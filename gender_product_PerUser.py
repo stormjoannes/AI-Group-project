@@ -39,6 +39,7 @@ for i in range(0, len(all_profid)):
     cur.execute("INSERT INTO profid_targetaudience (id_, recommendation) VALUES (%s, %s)", (all_profid[i], rand))
 
 conn.commit()
+
 # Hier sluit ik de communicatie met de database
 cur.close()
 conn.close()
