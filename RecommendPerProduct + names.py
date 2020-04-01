@@ -222,7 +222,7 @@ for i in range(len(subsubcatrecs)):
                             "and subsubcatrecommend is null".format(subsubcatrecs[i][1][j][0], subsubcatrecs[i][0],
                                                                  subsubcatrecs[i][1][j][0], subsubcatrecs[i][1][j][0]))
 
-cur.execute("select name FROM products WHERE catrecommend is null or subcatrecommend is null or subsubcatrecommend is null")
+cur.execute("select name FROM products")
 namen = cur.fetchall()
 print(len(namen))
 count = 0
