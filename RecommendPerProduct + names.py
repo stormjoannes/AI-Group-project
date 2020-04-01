@@ -39,7 +39,6 @@ def vergelijking(naam):
                 runcounter += 1
             else:
                 loophouder = 1
-
         cur.execute(
             "SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM products WHERE name = '{}'".format(naam))
         recs_raw = cur.fetchall()
