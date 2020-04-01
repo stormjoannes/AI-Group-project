@@ -232,8 +232,14 @@ print("Creating table with recommendations per user...")
 
 cur.execute("DROP TABLE IF EXISTS profile_recommendations")
 
-cur.execute("CREATE TABLE profile_recommendations AS (select id, catrecommend, subcatrecommend, subsubcatrecommend,  recommendation"
-            "from popular_categorys_per_user, profid_targetaudience)")
+cur.execute("CREATE TABLE profile_recommendations (id_ varchar PRIMARY KEY, "                
+            "catrecommend varchar, "
+            "subcatrecommend varchar, "
+            "subsubcatrecommend varchar, "
+            "genderrecommend varchar);")
+
+cur.execute("select id_ from profile_recommendations;")
+all_prodid = cur.fetchall()
 
 print("Recommendations created for user!")
 
