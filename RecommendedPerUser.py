@@ -232,29 +232,8 @@ print("Creating table with recommendations per user...")
 
 cur.execute("DROP TABLE IF EXISTS profile_recommendations")
 
-cur.execute("CREATE TABLE profile_recommendations (id varchar PRIMARY KEY, "                
-            "catrecommend varchar, "
-            "subcatrecommend varchar, "
-            "subsubcatrecommend varchar, "
-            "genderrecommend varchar);")
-
-cur.execute("select id from profile_recommendations;")
-all_id = cur.fetchall()
-
-cur.execute("select catrecommend from profile_recommendations;")
-all_catrecommend = cur.fetchall()
-
-cur.execute("select subcatrecommend from profile_recommendations;")
-all_subcatrecommend = cur.fetchall()
-
-cur.execute("select subsubcatrecommend from profile_recommendations;")
-all_subsubcatrecommend = cur.fetchall()
-
-cur.execute("select recommendation from profile_recommendations;")
-all_genderrecommend = cur.fetchall()
-
-for tel in range(0, len(all_id)):
-
+cur.execute("CREATE TABLE profile_recommendations AS (select id, catrecommend, subcatrecommend, subsubcatrecommend "
+            "from popular_categorys_per_user)")
 
 print("Recommendations created for user!")
 
