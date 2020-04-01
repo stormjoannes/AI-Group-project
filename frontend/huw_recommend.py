@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 api = Api(app)
 
-conn = psycopg2.connect("dbname=onlinestore user=postgres password=roodwailord")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
 
 # We define these variables to (optionally) connect to an external MongoDB

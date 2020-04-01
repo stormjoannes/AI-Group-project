@@ -3,7 +3,7 @@ import time
 
 tijd = time.time()
 print("\n### RecommendPerProduct.py ###\n")
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
 def get_subcatrec(name):
     cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "

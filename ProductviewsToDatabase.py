@@ -72,7 +72,7 @@ print("\nAltering Tables...")
 
 # Voegt kolommen toe aan products waar de data van het tellen in kan worden gezet.
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
 
 cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS categoryviews")

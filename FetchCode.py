@@ -6,7 +6,7 @@ uitvoer = 'DataProductsPerUser'
 
 uit = open(uitvoer, 'w')
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
 print("Getting code...")
 

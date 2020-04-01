@@ -59,7 +59,7 @@ for i in range(len(data)):
 
 print("Putting calculated data in table...")
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
 
 # Voegt kolommen toe aan tabel profiles om data van favoriete categorien per user in te stoppen.

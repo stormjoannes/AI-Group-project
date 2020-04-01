@@ -2,7 +2,7 @@ import psycopg2
 
 print("\n### RecommendedPerUser.py ###\n")
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
 
 print("Setting up tables...")
@@ -232,8 +232,8 @@ print("Creating table with recommendations per user...")
 
 cur.execute("DROP TABLE IF EXISTS profile_recommendations")
 
-cur.execute("CREATE TABLE profile_recommendations AS (select id, catrecommend, subcatrecommend, subsubcatrecommend "
-            "from popular_categorys_per_user)")
+cur.execute("CREATE TABLE profile_recommendations AS (select id, catrecommend, subcatrecommend, subsubcatrecommend,  recommendation"
+            "from popular_categorys_per_user, profid_targetaudience)")
 
 print("Recommendations created for user!")
 
