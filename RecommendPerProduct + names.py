@@ -3,15 +3,10 @@ import time
 
 tijd = time.time()
 print("\n### RecommendPerProduct.py ###\n")
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
 cur = conn.cursor()
-def get_subcatrec(name):
-    cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "
-                "productviews is not null and subsubcategory = '{}'"
-                "order by categoryviews desc, subcategoryviews desc, "
-                "subsubcategoryviews desc, productviews desc "
-                "limit 2".format(name))
-    return cur.fetchall()
+
+
 def vergelijking(naam):
     naam = naam[0]
     if naam:
@@ -26,9 +21,9 @@ def vergelijking(naam):
             if "'" in vergelijknaam:
                 current = vergelijknaam.split("'")
                 vergelijknaam = "''".join(map(str, current))
-            cur.execute("""select id FROM products WHERE name like '{}' AND name != '{}' LIMIT 4""".format(('%' + vergelijknaam + '%'), naam))
+            cur.execute("""select id FROM products WHERE name like '{}' AND name != '{}' LIMIT 5""".format(('%' + vergelijknaam + '%'), naam))
             record = cur.fetchall()
-            if len(record) < 4:
+            if len(record) < 5:
                 if ' ' in naam and runcounter < 2:
                     vergelijknaam = naam.split(' ')[runcounter]
                 else:
@@ -40,48 +35,49 @@ def vergelijking(naam):
             else:
                 loophouder = 1
         cur.execute(
-            "SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM products WHERE name = '{}'".format(naam))
+            "SELECT catrecommend, subcatrecommend, subsubcatrecommend, id FROM products WHERE name = '{}'".format(naam))
         recs_raw = cur.fetchall()
-        recs = [recs_raw[0][0], recs_raw[0][1], recs_raw[0][2], None]
+        recs = [recs_raw[0][0], recs_raw[0][1], recs_raw[0][2], None, recs_raw[0][3]]
+
         for i in range(len(record)):
             if not recs[3]:
-                if not recs[0] and record[i][0] not in recs:
-                    recs[0] = record[i][0]
+                if recs[0] is None and record[i][0] not in recs:
                     if "'" in record[i][0]:
                         current = record[i][0].split("'")
                         recordid = "''".join(map(str, current))
                     else:
                         recordid = record[i][0]
-                    cur.execute("UPDATE products SET catrecommend = '{}' "
-                                "WHERE name = '{}'".format(recordid, naam))
-                elif not recs[1] and record[i][0] not in recs:
-                    recs[1] = record[i][0]
+                    recs[0] = recordid
+                elif recs[1] is None and record[i][0] not in recs:
                     if "'" in record[i][0]:
                         current = record[i][0].split("'")
                         recordid = "''".join(map(str, current))
                     else:
                         recordid = record[i][0]
-                    cur.execute("UPDATE products SET subcatrecommend = '{}' "
-                                "WHERE name = '{}'".format(recordid, naam))
-                elif not recs[2] and record[i][0] not in recs:
-                    recs[2] = record[i][0]
+                    recs[1] = recordid
+                elif recs[2] is None and record[i][0] not in recs:
                     if "'" in record[i][0]:
                         current = record[i][0].split("'")
                         recordid = "''".join(map(str, current))
                     else:
                         recordid = record[i][0]
-                    cur.execute("UPDATE products SET subsubcatrecommend = '{}' "
-                                "WHERE name = '{}'".format(recordid, naam))
-                elif record[i][0] not in recs:
+                    recs[2] = recordid
+                elif recs[3] is None and record[i][0] not in recs:
                     if "'" in record[i][0]:
                         current = record[i][0].split("'")
                         recordid = "''".join(map(str, current))
                     else:
                         recordid = record[i][0]
-                    cur.execute("UPDATE products SET namerecommend = '{}' "
-                                "WHERE name = '{}'".format(recordid, naam))
+                    recs[3] = recordid
             else:
                 break
+
+
+        cur.execute("UPDATE products SET catrecommend = '{}', subcatrecommend = '{}', "
+                    "subsubcatrecommend = '{}', namerecommend = '{}' "
+                    "WHERE name = '{}'".format(recs[0], recs[1], recs[2], recs[3], naam))
+
+
 
 print("Setting up tables...")
 # Maakt tabel met data van views per product uit tabel products.
@@ -123,25 +119,28 @@ catrecs = []
 for i in range(len(categorys)):
     if categorys[i][0]:
         if '[' not in categorys[i][0]:
+            name = categorys[i][0]
+            if "'" in name:
+                currentcat = name.split("'")
+                name = "''".join(map(str, currentcat))
             cur.execute("select id from valuesproducts where categoryviews is not null and "
                         "productviews is not null and category = '{}'"
                         "order by categoryviews desc, subcategoryviews desc, "
                         "subsubcategoryviews desc, productviews desc "
-                        "limit 1".format(categorys[i][0]))
+                        "limit 2".format(name))
             fetch = cur.fetchall()
-            catrecs.append([categorys[i][0], fetch])
+            if len(fetch) == 1:
+                catrecs.append([name, [fetch[0], fetch[0]]])
+            else:
+                catrecs.append([name, fetch])
 for i in range(len(catrecs)):
     if catrecs[i][1]:
         if catrecs[i][0] != 'None':
-            name = catrecs[i][0]
-            if "'" in name:
-                name = name.split("'")
-                name = name[0] + "''" + name[1]
+            for j in range(len(catrecs[i][1])):
                 cur.execute("UPDATE products SET catrecommend = '{}' "
-                            "WHERE category = '{}'".format(catrecs[i][1][0][0], name))
-            else:
-                cur.execute("UPDATE products SET catrecommend = '{}' "
-                            "WHERE category = '{}'".format(catrecs[i][1][0][0], name))
+                            "WHERE category = '{}' "
+                            "and catrecommend is null "
+                            "and id != '{}'".format(catrecs[i][1][j][0], catrecs[i][0], catrecs[i][1][j][0]))
 print("Calculating subcategory recommendations...")
 # Haalt recommendations per subcategory op aan de hand van subcategoryviews,
 # en zet deze in products bij de juiste subcategorys.
@@ -151,28 +150,31 @@ for i in range(len(subcategorys)):
     name = subcategorys[i][0]
     if subcategorys[i][0]:
         if "'" in name:
-            name = name.split("'")
-            name = name[0] + "''" + name[1]
-            fetch = get_subcatrec(name)
-            if len(fetch) == 1:
-                subcatrecs.append([name, [fetch[0], fetch[0]]])
-            else:
-                subcatrecs.append([name, fetch])
+            currentsubcat = name.split("'")
+            name = "''".join(map(str, currentsubcat))
+
+        cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "
+                    "productviews is not null and subsubcategory = '{}'"
+                    "order by categoryviews desc, subcategoryviews desc, "
+                    "subsubcategoryviews desc, productviews desc "
+                    "limit 3".format(name))
+        fetch = cur.fetchall()
+        if len(fetch) == 1:
+            subcatrecs.append([name, [fetch[0], fetch[0], fetch[0]]])
+        elif len(fetch) == 2:
+            subcatrecs.append([name, [fetch[0], fetch[1], fetch[1]]])
         else:
-            fetch = get_subcatrec(name)
-            if len(fetch) == 1:
-                subcatrecs.append([name, [fetch[0], fetch[0]]])
-            else:
-                subcatrecs.append([name, fetch])
+            subcatrecs.append([name, fetch])
 for i in range(len(subcatrecs)):
     if subcatrecs[i][1]:
         if subcatrecs[i][0] != 'None':
-            for j in range(2):
+            for j in range(len(subcatrecs[i][1])):
                 cur.execute("UPDATE products SET subcatrecommend = '{}' "
                             "WHERE subcategory = '{}' "
                             "and catrecommend != '{}' "
-                            "and subcatrecommend is null".format(subcatrecs[i][1][j][0], subcatrecs[i][0],
-                                                                 subcatrecs[i][1][j][0]))
+                            "and subcatrecommend is null "
+                            "and id != '{}'".format(subcatrecs[i][1][j][0], subcatrecs[i][0],
+                                                    subcatrecs[i][1][j][0], subcatrecs[i][1][j][0]))
 conn.commit()
 print("Calculating subsubcategory recommendations...")
 # Haalt recommendations per subsubcategory op aan de hand van subsubcategoryviews,
@@ -183,59 +185,51 @@ for i in range(len(subsubcategorys)):
     if subsubcategorys[i][0]:
         name = subsubcategorys[i][0]
         if "'" in name:
-            name = name.split("'")
-            name = name[0] + "''" + name[1]
-            cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "
-                        "productviews is not null and subsubcategory = '{}'"
-                        "order by categoryviews desc, subcategoryviews desc, "
-                        "subsubcategoryviews desc, productviews desc "
-                        "limit 2".format(name))
-            fetch = cur.fetchall()
-            if len(fetch) == 1:
-                subsubcatrecs.append([name, [fetch[0], fetch[0], fetch[0]]])
-            elif len(fetch) == 2:
-                subsubcatrecs.append([name, [fetch[0], fetch[1], fetch[1]]])
-            else:
-                subsubcatrecs.append([name, fetch])
+            currentsubsubcat = name.split("'")
+            name = "''".join(map(str, currentsubsubcat))
+        cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "
+                    "productviews is not null and subsubcategory = '{}'"
+                    "order by categoryviews desc, subcategoryviews desc, "
+                    "subsubcategoryviews desc, productviews desc "
+                    "limit 4".format(name))
+        fetch = cur.fetchall()
+        if len(fetch) == 1:
+            subsubcatrecs.append([name, [fetch[0], fetch[0], fetch[0], fetch[0]]])
+        elif len(fetch) == 2:
+            subsubcatrecs.append([name, [fetch[0], fetch[1], fetch[1], fetch[1]]])
+        elif len(fetch) == 2:
+            subsubcatrecs.append([name, [fetch[0], fetch[1], fetch[2], fetch[2]]])
         else:
-            cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "
-                        "productviews is not null and subsubcategory = '{}'"
-                        "order by categoryviews desc, subcategoryviews desc, "
-                        "subsubcategoryviews desc, productviews desc "
-                        "limit 2".format(name))
-            fetch = cur.fetchall()
-            if len(fetch) == 1:
-                subsubcatrecs.append([name, [fetch[0], fetch[0], fetch[0]]])
-            elif len(fetch) == 2:
-                subsubcatrecs.append([name, [fetch[0], fetch[1], fetch[1]]])
-            else:
-                subsubcatrecs.append([name, fetch])
+            subsubcatrecs.append([name, fetch])
 for i in range(len(subsubcatrecs)):
     if subsubcatrecs[i][1]:
         if subsubcatrecs[i][0] != 'None':
-            for j in range(3):
+            for j in range(len(subsubcatrecs[i][1])):
                 cur.execute("UPDATE products SET subsubcatrecommend = '{}' "
                             "WHERE subsubcategory = '{}' "
                             "and subcatrecommend != '{}' "
                             "and catrecommend != '{}' "
-                            "and subsubcatrecommend is null".format(subsubcatrecs[i][1][j][0], subsubcatrecs[i][0],
-                                                                 subsubcatrecs[i][1][j][0], subsubcatrecs[i][1][j][0]))
+                            "and subsubcatrecommend is null "
+                            "and id != '{}'".format(subsubcatrecs[i][1][j][0], subsubcatrecs[i][0],
+                                                    subsubcatrecs[i][1][j][0], subsubcatrecs[i][1][j][0],
+                                                    subsubcatrecs[i][1][j][0]))
 
+print("Calculating name recommendations...")
 cur.execute("select name FROM products")
 namen = cur.fetchall()
-print(len(namen))
 count = 0
+conn.commit()
 for naam in namen:
     count += 1
-    print('\r{}'.format(count), end='')
+    print('\r{} of {}'.format(count, len(namen)), end='')
     vergelijking(naam)
-conn.commit()
+    conn.commit()
 
-print("Creating table with recommendations per product...")
+print("\nCreating table with recommendations per product...")
 # Maakt tabel met recommendations per product uit tabel products.
 cur.execute("DROP TABLE IF EXISTS product_recommendations")
-cur.execute("CREATE TABLE product_recommendations AS (select id, catrecommend, subcatrecommend, subsubcatrecommend "
-            "from products)")
+cur.execute("CREATE TABLE product_recommendations AS (select id, catrecommend, subcatrecommend, subsubcatrecommend, "
+            "namerecommend from products)")
 print("Recommendations created for products!")
 conn.commit()
 cur.close()
