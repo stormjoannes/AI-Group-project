@@ -55,9 +55,15 @@ for i in range(0, len(all_profid)):
                 break
 
     if all_deal == []:
-        targ_prod = "'" + str(targ_prod) + "'"
-        exe = f"select id from products where targetaudience like {targ_prod} and deal IS NULL LIMIT 5"
-        cur.execute(exe)
+        if targ_prod == None:
+            exe = f"select id from products where targetaudience IS NULL and deal IS NULL LIMIT 5"
+            cur.execute(exe)
+        else:
+            targ_prod = targ_prod.split("'")
+            targ_prod = targ_prod[0] + '%'
+            targ_prod = "'" + str(targ_prod) + "'"
+            exe = f"select id from products where targetaudience like {targ_prod} and deal IS NULL LIMIT 5"
+            cur.execute(exe)
 
     elif None == targ_prod:
         if best_deal.count("'") < 2:
@@ -82,7 +88,10 @@ for i in range(0, len(all_profid)):
 
     all_rec = cur.fetchall()
     if len(all_rec) == 0:
-        exe = f"select id from products where targetaudience LIKE {targ_prod}LIMIT 5"
+        if best_deal == None:
+            exe = f"select id from products where targetaudience LIKE {targ_prod}LIMIT 5"
+        else:
+            exe = f"select id from products where deal LIKE {best_deal}LIMIT 5"
         cur.execute(exe)
         all_rec = cur.fetchall()
     rand = random.choice(all_rec)
