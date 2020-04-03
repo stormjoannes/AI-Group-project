@@ -3,9 +3,10 @@ import random
 
 conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
-cur.execute("DROP TABLE IF EXISTS profid_targetaudience;")               #Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
+cur.execute(
+    "DROP TABLE IF EXISTS profid_targetaudience;")  # Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
 
-cur.execute("CREATE TABLE profid_targetaudience (id_ varchar PRIMARY KEY, "                #hier create ik mijn table.
+cur.execute("CREATE TABLE profid_targetaudience (id_ varchar PRIMARY KEY, "  # hier create ik mijn table.
             "recommendation varchar);")
 
 cur.execute("select id from profile_recommendations;")
@@ -51,8 +52,14 @@ for i in range(0, len(all_profid)):
         for where in range(0, len(temp_count)):
             if popular == temp_count[where]:
                 best_deal = all_deal[where]
+                break
 
-    if None == targ_prod:
+    if all_deal == []:
+        targ_prod = "'" + str(targ_prod) + "'"
+        exe = f"select id from products where targetaudience like {targ_prod} and deal IS NULL LIMIT 5"
+        cur.execute(exe)
+
+    elif None == targ_prod:
         if best_deal.count("'") < 2:
             best_deal = "'" + best_deal + "'"
         exe = f"select id from products where targetaudience IS NULL and deal like {best_deal} LIMIT 5"
@@ -73,11 +80,11 @@ for i in range(0, len(all_profid)):
             exe = f"select id from products where targetaudience LIKE {targ_prod} and deal like {best_deal} LIMIT 5"
             cur.execute(exe)
 
+    all_rec = cur.fetchall()
+    if len(all_rec) == 0:
+        exe = f"select id from products where targetaudience LIKE {targ_prod}LIMIT 5"
+        cur.execute(exe)
         all_rec = cur.fetchall()
-        if len(all_rec) == 0:
-            exe = f"select id from products where targetaudience LIKE {targ_prod}LIMIT 5"
-            cur.execute(exe)
-            all_rec = cur.fetchall()
     rand = random.choice(all_rec)
     cur.execute("INSERT INTO profid_targetaudience (id_, recommendation) VALUES (%s, %s)", (all_profid[i], rand))
 
