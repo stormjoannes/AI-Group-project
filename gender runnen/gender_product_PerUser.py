@@ -11,7 +11,6 @@ cur.execute("CREATE TABLE profid_targetaudience (id_ varchar PRIMARY KEY, "     
 cur.execute("select id from profile_recommendations;")
 all_profid = cur.fetchall()
 
-
 cur.execute("select catrecommend, subcatrecommend, subsubcatrecommend from profile_recommendations;")
 all_prodid = cur.fetchall()
 
@@ -74,11 +73,15 @@ for i in range(0, len(all_profid)):
             exe = f"select id from products where targetaudience LIKE {targ_prod} and deal like {best_deal} LIMIT 5"
             cur.execute(exe)
 
-    all_rec = cur.fetchall()
+        all_rec = cur.fetchall()
+        if len(all_rec) == 0:
+            exe = f"select id from products where targetaudience LIKE {targ_prod}LIMIT 5"
+            cur.execute(exe)
+            all_rec = cur.fetchall()
     rand = random.choice(all_rec)
     cur.execute("INSERT INTO profid_targetaudience (id_, recommendation) VALUES (%s, %s)", (all_profid[i], rand))
 
-conn.commit()
+    conn.commit()
 
 # Hier sluit ik de communicatie met de database
 cur.close()
