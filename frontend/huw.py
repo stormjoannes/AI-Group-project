@@ -223,13 +223,13 @@ class HUWebshop(object):
 
     """ ..:: Recommendation Functions ::.. """
 
-    def recommendations(self, count, prodid):
+    def recommendations(self, count, prodid, page):
         """ This function returns the recommendations from the provided page
         and context, by sending a request to the designated recommendation
         service. At the moment, it only transmits the profile ID and the number
         of expected recommendations; to have more user information in the REST
         request, this function would have to change."""
-        resp = requests.get(self.recseraddress+"/"+session['profile_id']+"/"+str(count)+"/"+str(prodid))
+        resp = requests.get(self.recseraddress+"/"+session['profile_id']+"/"+str(count)+"/"+str(prodid)+'/'+page)
 
         if resp.status_code == 200:
             recs = eval(resp.content.decode())
@@ -268,7 +268,7 @@ class HUWebshop(object):
             'pend': skipindex + session['items_per_page'] if session['items_per_page'] > 0 else prodcount, \
             'prevpage': pagepath+str(page-1) if (page > 1) else False, \
             'nextpage': pagepath+str(page+1) if (session['items_per_page']*page < prodcount) else False, \
-            'r_products':self.recommendations(3, None), \
+            'r_products':self.recommendations(3, None, 'category'), \
             'r_type':list(self.recommendationtypes.keys())[4],\
             'r_string':list(self.recommendationtypes.values())[4]\
             })
@@ -279,7 +279,7 @@ class HUWebshop(object):
         product = self.database.products.find_one({"_id":str(productid)})
         return self.renderpackettemplate('productdetail.html', {'product':product,\
             'prepproduct':self.prepproduct(product),\
-            'r_products':self.recommendations(3, productid), \
+            'r_products':self.recommendations(3, productid, 'detail'), \
             'r_type':list(self.recommendationtypes.keys())[1],\
             'r_string':list(self.recommendationtypes.values())[1]})
 
@@ -291,7 +291,7 @@ class HUWebshop(object):
             product["itemcount"] = tup[1]
             i.append(product)
         return self.renderpackettemplate('shoppingcart.html',{'itemsincart':i,\
-            'r_products':self.recommendations(3, None), \
+            'r_products':self.recommendations(3, None, 'shoppingcart'), \
             'r_type':list(self.recommendationtypes.keys())[2],\
             'r_string':list(self.recommendationtypes.values())[2]})
 

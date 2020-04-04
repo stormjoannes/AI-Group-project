@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 api = Api(app)
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
+conn = psycopg2.connect("dbname=onlinestore user=postgres password=roodwailord")
 cur = conn.cursor()
 
 # We define these variables to (optionally) connect to an external MongoDB
@@ -33,17 +33,20 @@ class Recom(Resource):
     the webshop. At the moment, the API simply returns a random set of products
     to recommend."""
 
-    def get(self, profileid, prodid, count):
+    def get(self, profileid, prodid, count, page):
         """ This function represents the handler for GET requests coming in
         through the API. It currently returns a random sample of products. """
         prodids = []
 
-        if prodid == 'None':
+        if page == 'category':
             query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
             data = cur.execute(query, (profileid, ))
-        else:
-            query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM product_recommendations WHERE id = %s"""
+        elif page == 'detail':
+            query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend, namerecommend FROM products WHERE id = %s"""
             data = cur.execute(query, (prodid, ))
+        elif page == 'shoppingcart':
+            query = """SELECT genderrecommend FROM all_prof_rec WHERE id = %s"""
+            data = cur.execute(query, (profileid, ))
 
         ids = cur.fetchall()
         for i in ids:
@@ -55,4 +58,4 @@ class Recom(Resource):
 # This method binds the Recom class to the REST API, to parse specifically
 # requests in the format described below.
 
-api.add_resource(Recom, "/<string:profileid>/<int:count>/<string:prodid>")
+api.add_resource(Recom, "/<string:profileid>/<int:count>/<string:prodid>/<string:page>")
