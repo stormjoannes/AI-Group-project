@@ -1,9 +1,10 @@
-import psycopg2
+from backend.create_connnection import create_connection
+
+db = create_connection()
+cur = db[0]
+conn = db[1]
 
 print("\n### RecommendedPerUser.py ###\n")
-
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
-cur = conn.cursor()
 
 print("Setting up tables...")
 
