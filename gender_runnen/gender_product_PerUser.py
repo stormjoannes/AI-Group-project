@@ -1,8 +1,10 @@
-import psycopg2
 import random
+from backend.create_connnection import create_connection
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
-cur = conn.cursor()
+db = create_connection()
+cur = db[0]
+conn = db[1]
+
 cur.execute("DROP TABLE IF EXISTS profid_targetaudience;")  # Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
 
 cur.execute("CREATE TABLE profid_targetaudience (id_ varchar PRIMARY KEY, "  # hier create ik mijn table.

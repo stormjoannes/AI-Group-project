@@ -1,10 +1,12 @@
-import psycopg2
 import time
+from backend.create_connnection import create_connection
+
+db = create_connection()
+cur = db[0]
+conn = db[1]
 
 tijd = time.time()
 print("\n### RecommendPerProduct.py ###\n")
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
-cur = conn.cursor()
 
 
 def vergelijking(naam):

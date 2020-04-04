@@ -1,4 +1,8 @@
-import psycopg2
+from backend.create_connnection import create_connection
+
+db = create_connection()
+cur = db[0]
+conn = db[1]
 
 print("\n### ProductviewsToDatabase.py ###\n")
 
@@ -71,9 +75,6 @@ namescount.sort(reverse=True)
 print("\nAltering Tables...")
 
 # Voegt kolommen toe aan products waar de data van het tellen in kan worden gezet.
-
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
-cur = conn.cursor()
 
 cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS categoryviews")
 cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS subcategoryviews")

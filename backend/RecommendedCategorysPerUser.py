@@ -1,4 +1,8 @@
-import psycopg2
+from backend.create_connnection import create_connection
+
+db = create_connection()
+cur = db[0]
+conn = db[1]
 
 print("\n### RecommendedCategorysPerUser.py ###\n")
 
@@ -59,8 +63,6 @@ for i in range(len(data)):
 
 print("Putting calculated data in table...")
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
-cur = conn.cursor()
 
 # Voegt kolommen toe aan tabel profiles om data van favoriete categorien per user in te stoppen.
 

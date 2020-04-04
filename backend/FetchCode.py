@@ -1,4 +1,4 @@
-import psycopg2
+from backend.create_connnection import create_connection
 
 print("\n### FetchCode.py ###\n")
 
@@ -6,8 +6,9 @@ uitvoer = 'DataProductsPerUser'
 
 uit = open(uitvoer, 'w')
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
-cur = conn.cursor()
+db = create_connection()
+cur = db[0]
+conn = db[1]
 print("Getting code...")
 
 # Haalt de sessiedata op per profiel met daarbij de producten die zijn bekeken.
