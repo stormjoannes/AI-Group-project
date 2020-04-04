@@ -15,25 +15,25 @@ cur.execute("CREATE TABLE all_prof_rec (id varchar PRIMARY KEY, "
             "subsubcatrecommend varchar, "
             "genderrecommend varchar);")
 
+print("Getting all id's...")
 cur.execute("select id from profile_recommendations;")
 all_id = cur.fetchall()
-print('all_id done')
 
+print('Getting all category recommended...')
 cur.execute("select catrecommend from profile_recommendations;")
 all_catrecommend = cur.fetchall()
-print('all_catrecommend done')
 
+print('Getting all subcategory recommended...')
 cur.execute("select subcatrecommend from profile_recommendations;")
 all_subcatrecommend = cur.fetchall()
-print('all_subcatrecommend done')
 
+print('Getting all subsubcategory recommended...')
 cur.execute("select subsubcatrecommend from profile_recommendations;")
 all_subsubcatrecommend = cur.fetchall()
-print('all_subsubcatrecommend done')
 
+print('Getting all targetaudience + deal recommended...')
 cur.execute("select recommendation from profid_targetaudience;")
 all_genderrecommend = cur.fetchall()
-print('all_genderrecommend done')
 
 for tel in range(0, len(all_id)):
     print("\rcalculating recommendations {}....".format(tel), end='')
