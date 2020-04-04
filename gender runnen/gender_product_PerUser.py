@@ -60,8 +60,7 @@ for i in range(0, len(all_profid)):
             cur.execute(exe)
         else:
             targ_prod = targ_prod.split("'")
-            targ_prod = targ_prod[0] + '%'
-            targ_prod = "'" + str(targ_prod) + "'"
+            targ_prod = "'" + targ_prod[0] + '%' + "'"
             exe = f"select id from products where targetaudience like {targ_prod} and deal IS NULL LIMIT 5"
             cur.execute(exe)
 
@@ -72,22 +71,19 @@ for i in range(0, len(all_profid)):
         cur.execute(exe)
 
     else:
-        targ_prod = targ_prod
         targ_prod = targ_prod.split("'")
-        targ_prod = targ_prod[0] + '%'
+        targ_prod = "'" + targ_prod[0] + '%' + "'"
         if best_deal.count("'") < 2:
             best_deal = "'" + best_deal + "'"
-        if targ_prod == 'Unisex%':
-            targ_prod = "'" + str(targ_prod) + "'"
+        if targ_prod == "'Unisex%'":
             exe = f"select id from products where targetaudience LIKE {targ_prod}LIMIT 5"
             cur.execute(exe)
         else:
-            targ_prod = "'" + str(targ_prod) + "'"
             exe = f"select id from products where targetaudience LIKE {targ_prod} and deal like {best_deal} LIMIT 5"
             cur.execute(exe)
 
     all_rec = cur.fetchall()
-    if len(all_rec) == 0:
+    if len(cur.fetchall()) == 0:
         if best_deal == None:
             exe = f"select id from products where targetaudience LIKE {targ_prod}LIMIT 5"
         else:
