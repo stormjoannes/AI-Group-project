@@ -17,6 +17,6 @@ if it doesn't work try following the readme at [gitlab](https://gitlab.com/hu-hb
 
 ### How to create a connection
 
-1. Go to the folder 'backend' using `cd backend`
+1. Go to the folder 'backend'
 2. Go to the file 'create_connection'
 3. Edit the connection values so that it can connect to your database
