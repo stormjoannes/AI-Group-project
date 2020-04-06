@@ -1,14 +1,10 @@
 import time
 from backend.create_connnection import create_connection
-
 db = create_connection()
 cur = db[0]
 conn = db[1]
-
 tijd = time.time()
 print("\n### RecommendPerProduct.py ###\n")
-
-
 def vergelijking(naam):
     naam = naam[0]
     if naam:
@@ -28,6 +24,10 @@ def vergelijking(naam):
             if len(record) < 5:
                 if ' ' in naam and runcounter < 2:
                     vergelijknaam = naam.split(' ')[runcounter]
+                    if runcounter == 0:
+                        vergelijknaam = vergelijknaam + ' '
+                    if runcounter == 1:
+                        vergelijknaam = ' ' + vergelijknaam
                 else:
                     if run == 0:
                         vergelijknaam = naam.split(' ')[0]
@@ -40,7 +40,6 @@ def vergelijking(naam):
             "SELECT catrecommend, subcatrecommend, subsubcatrecommend, id FROM products WHERE name = '{}'".format(naam))
         recs_raw = cur.fetchall()
         recs = [recs_raw[0][0], recs_raw[0][1], recs_raw[0][2], None, recs_raw[0][3]]
-
         for i in range(len(record)):
             if not recs[3]:
                 if recs[0] is None and record[i][0] not in recs:
@@ -73,14 +72,9 @@ def vergelijking(naam):
                     recs[3] = recordid
             else:
                 break
-
-
         cur.execute("UPDATE products SET catrecommend = '{}', subcatrecommend = '{}', "
                     "subsubcatrecommend = '{}', namerecommend = '{}' "
                     "WHERE name = '{}'".format(recs[0], recs[1], recs[2], recs[3], naam))
-
-
-
 print("Setting up tables...")
 # Maakt tabel met data van views per product uit tabel products.
 cur.execute("DROP TABLE IF EXISTS valuesproducts")
@@ -95,28 +89,22 @@ cur.execute("ALTER TABLE products ADD catrecommend varchar")
 cur.execute("ALTER TABLE products ADD subcatrecommend varchar")
 cur.execute("ALTER TABLE products ADD subsubcatrecommend varchar")
 cur.execute("ALTER TABLE products ADD namerecommend varchar")
-
 conn.commit()
 print("Getting data...")
 # Haalt alle categorys op en zorgt ervoor dat er maar 1 van elk in de lijst staat.
 cur.execute("select category from products")
 categorys = list(set(cur.fetchall()))
-
 # Haalt alle subcategorys op en zorgt ervoor dat er maar 1 van elk in de lijst staat.
 cur.execute("select subcategory from products")
 subcategorys = list(set(cur.fetchall()))
-
 # Haalt alle subsubcategorys op en zorgt ervoor dat er maar 1 van elk in de lijst staat.
 cur.execute("select subsubcategory from products")
 subsubcategorys = list(set(cur.fetchall()))
-
 print("Calculating category recommendations...")
 # Haalt recommendations per category op aan de hand van categoryviews,
 # en zet deze in products bij de juiste categorys.
 # Daarnaast zet hij in de lege velden het meest overal bekeken product op basis van meest bekeken category.
-
 conn.commit()
-
 catrecs = []
 for i in range(len(categorys)):
     if categorys[i][0]:
@@ -154,7 +142,6 @@ for i in range(len(subcategorys)):
         if "'" in name:
             currentsubcat = name.split("'")
             name = "''".join(map(str, currentsubcat))
-
         cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "
                     "productviews is not null and subsubcategory = '{}'"
                     "order by categoryviews desc, subcategoryviews desc, "
@@ -215,7 +202,6 @@ for i in range(len(subsubcatrecs)):
                             "and id != '{}'".format(subsubcatrecs[i][1][j][0], subsubcatrecs[i][0],
                                                     subsubcatrecs[i][1][j][0], subsubcatrecs[i][1][j][0],
                                                     subsubcatrecs[i][1][j][0]))
-
 print("Calculating name recommendations...")
 cur.execute("select name FROM products")
 namen = cur.fetchall()
@@ -226,7 +212,6 @@ for naam in namen:
     print('\r{} of {}'.format(count, len(namen)), end='')
     vergelijking(naam)
     conn.commit()
-
 print("\nCreating table with recommendations per product...")
 # Maakt tabel met recommendations per product uit tabel products.
 cur.execute("DROP TABLE IF EXISTS product_recommendations")
@@ -236,7 +221,6 @@ print("Recommendations created for products!")
 conn.commit()
 cur.close()
 conn.close()
-
 eind = time.time()
 print('tijd:')
 print(eind-tijd)
