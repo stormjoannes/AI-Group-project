@@ -42,16 +42,16 @@ def base():
 def recommended(targ_prod, best_deal):
     if None == targ_prod or None == best_deal:
         if targ_prod == None and best_deal != None:
-            exe = """select id from products where targetaudience IS NULL and deal LIKE %s LIMIT 5"""
+            exe = """select id from products where targetaudience IS NULL and deal LIKE %s LIMIT 10"""
             cur.execute(exe, (best_deal,))
         elif best_deal == None and targ_prod != None:
-            exe = """select id from products where targetaudience LIKE %s and deal IS NULL LIMIT 5"""
+            exe = """select id from products where targetaudience LIKE %s and deal IS NULL LIMIT 10"""
             cur.execute(exe, (targ_prod,))
         else:
-            cur.execute("select id from products where targetaudience IS NULL and deal IS NULL LIMIT 5")
+            cur.execute("select id from products where targetaudience IS NULL and deal IS NULL LIMIT 10")
 
     else:
-        exe = """select id from products where targetaudience LIKE %s and deal like %s LIMIT 5"""
+        exe = """select id from products where targetaudience LIKE %s and deal like %s LIMIT 10"""
         cur.execute(exe, (targ_prod, best_deal,))
 
     all_rec = cur.fetchall()
