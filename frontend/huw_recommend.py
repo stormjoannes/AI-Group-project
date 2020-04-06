@@ -45,7 +45,7 @@ class Recom(Resource):
             query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend, namerecommend FROM products WHERE id = %s"""
             data = cur.execute(query, (prodid, ))
         elif page == 'shoppingcart':
-            query = """SELECT recommendation_1, recommendation_2, recommendation_3, recommendation_4 FROM all_prof_rec WHERE id = %s"""
+            query = """SELECT recommendation_1, recommendation_2, recommendation_3, recommendation_4 FROM all_prof_rec WHERE id_ = %s"""
             data = cur.execute(query, (profileid, ))
 
         ids = cur.fetchall()
