@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 api = Api(app)
 
-conn = psycopg2.connect("dbname=onlinestore user=postgres password=roodwailord")
+conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
 cur = conn.cursor()
 
 # We define these variables to (optionally) connect to an external MongoDB
@@ -45,7 +45,7 @@ class Recom(Resource):
             query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend, namerecommend FROM products WHERE id = %s"""
             data = cur.execute(query, (prodid, ))
         elif page == 'shoppingcart':
-            query = """SELECT genderrecommend FROM all_prof_rec WHERE id = %s"""
+            query = """SELECT recommendation_1, recommendation_2, recommendation_3, recommendation_4 FROM all_prof_rec WHERE id = %s"""
             data = cur.execute(query, (profileid, ))
 
         ids = cur.fetchall()

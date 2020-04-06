@@ -7,8 +7,7 @@ conn = db[1]
 
 cur.execute("DROP TABLE IF EXISTS all_prof_rec;")  # Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
 
-cur.execute("CREATE TABLE all_prof_rec (id serial PRIMARY KEY, "            # hier create ik mijn table.
-            "id_ varchar, "
+cur.execute("CREATE TABLE all_prof_rec (id_ varchar PRIMARY KEY, "            # hier create ik mijn table.
             "recommendation_1 varchar,"
             "recommendation_2 varchar, "
             "recommendation_3 varchar, "
