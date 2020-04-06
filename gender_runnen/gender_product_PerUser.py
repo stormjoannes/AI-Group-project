@@ -5,11 +5,14 @@ db = create_connection()
 cur = db[0]
 conn = db[1]
 
-cur.execute("DROP TABLE IF EXISTS profid_targetaudience;")  # Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
+cur.execute("DROP TABLE IF EXISTS all_prof_rec;")  # Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
 
-cur.execute("CREATE TABLE profid_targetaudience (id serial PRIMARY KEY, "            # hier create ik mijn table.
+cur.execute("CREATE TABLE all_prof_rec (id serial PRIMARY KEY, "            # hier create ik mijn table.
             "id_ varchar, "
-            "recommendation varchar);")
+            "recommendation_1 varchar,"
+            "recommendation_2 varchar, "
+            "recommendation_3 varchar, "
+            "recommendation_4 varchar);")
 
 def base():
     all = all_inf()
@@ -31,13 +34,13 @@ def base():
         best_deal = most_common(all_deal)
 
         rand_choice = recommended(targ_prod, best_deal)
-        all_rand_choice = []
-        while len(all_rand_choice) < 4:
-            rand = random.choice(rand_choice)
-            if rand not in all_rand_choice:
-                all_rand_choice.append(rand)
-        for rec in range(0, len(all_rand_choice)):
-            cur.execute("INSERT INTO profid_targetaudience (id_, recommendation) VALUES (%s, %s)", (all_profid[i], all_rand_choice[rec]))
+        random.shuffle(rand_choice)
+        all_rand_choice = rand_choice[0:4]
+        cur.execute("INSERT INTO all_prof_rec (id_, "
+                    "recommendation_1, "
+                    "recommendation_2, "
+                    "recommendation_3, "
+                    "recommendation_4) VALUES (%s, %s, %s, %s, %s)", (all_profid[i], all_rand_choice[0], all_rand_choice[1], all_rand_choice[2], all_rand_choice[3]))
 
 def recommended(targ_prod, best_deal):
     if None == targ_prod or None == best_deal:
@@ -55,7 +58,7 @@ def recommended(targ_prod, best_deal):
         cur.execute(exe, (targ_prod, best_deal,))
 
     all_rec = cur.fetchall()
-    if len(all_rec) == 0:
+    if len(all_rec) < 4:
         exe = """select id from products where targetaudience LIKE %s LIMIT 10"""
         cur.execute(exe, (targ_prod,))
         all_rec = cur.fetchall()
@@ -81,7 +84,6 @@ def most_common(list):
 def all_inf():
     cur.execute("select id from profile_recommendations;")
     all_profid = cur.fetchall()
-
     cur.execute("select catrecommend, subcatrecommend, subsubcatrecommend from profile_recommendations;")
     all_prodid = cur.fetchall()
     return all_profid, all_prodid
