@@ -1,14 +1,16 @@
-from flask import Flask, request, session, render_template, redirect, url_for, g
-from flask_restful import Api, Resource, reqparse
+from flask import Flask
+from flask_restful import Api, Resource
 import os
-import psycopg2
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from backend.create_connnection import create_connection
 
 app = Flask(__name__)
 api = Api(app)
 
-conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
+db = create_connection()
+cur = db[0]
+conn = db[1]
 cur = conn.cursor()
 
 # We define these variables to (optionally) connect to an external MongoDB
