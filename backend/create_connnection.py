@@ -5,13 +5,10 @@ import psycopg2
 
 def create_connection():
     try:
-        conn = psycopg2.connect("dbname=onlinestore user=postgres password=roodwailord")
+        conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
         cur = conn.cursor()
         # return two values so I can close them both at the end
         return cur, conn
 
     except(Exception, psycopg2.DatabaseError):
         print(psycopg2.DatabaseError)
-
-
-

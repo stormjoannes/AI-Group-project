@@ -7,7 +7,8 @@ conn = db[1]
 
 cur.execute("DROP TABLE IF EXISTS profid_targetaudience;")  # Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
 
-cur.execute("CREATE TABLE profid_targetaudience (id_ varchar PRIMARY KEY, "  # hier create ik mijn table.
+cur.execute("CREATE TABLE profid_targetaudience (id serial PRIMARY KEY, "            # hier create ik mijn table.
+            "id_ varchar, "
             "recommendation varchar);")
 
 def base():
@@ -29,8 +30,14 @@ def base():
         targ_prod = most_common(all_audience)
         best_deal = most_common(all_deal)
 
-        rand = recommended(targ_prod, best_deal)
-        cur.execute("INSERT INTO profid_targetaudience (id_, recommendation) VALUES (%s, %s)", (all_profid[i], rand))
+        rand_choice = recommended(targ_prod, best_deal)
+        all_rand_choice = []
+        while len(all_rand_choice) < 4:
+            rand = random.choice(rand_choice)
+            if rand not in all_rand_choice:
+                all_rand_choice.append(rand)
+        for rec in range(0, len(all_rand_choice)):
+            cur.execute("INSERT INTO profid_targetaudience (id_, recommendation) VALUES (%s, %s)", (all_profid[i], all_rand_choice[rec]))
 
 def recommended(targ_prod, best_deal):
     if None == targ_prod or None == best_deal:
@@ -49,10 +56,10 @@ def recommended(targ_prod, best_deal):
 
     all_rec = cur.fetchall()
     if len(all_rec) == 0:
-        exe = """select id from products where targetaudience LIKE %s LIMIT 5"""
+        exe = """select id from products where targetaudience LIKE %s LIMIT 10"""
         cur.execute(exe, (targ_prod,))
         all_rec = cur.fetchall()
-    return random.choice(all_rec)
+    return all_rec
 
 def most_common(list):
     temp_count = []
