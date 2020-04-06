@@ -11,7 +11,6 @@ api = Api(app)
 db = create_connection()
 cur = db[0]
 conn = db[1]
-cur = conn.cursor()
 
 # We define these variables to (optionally) connect to an external MongoDB
 # instance.
