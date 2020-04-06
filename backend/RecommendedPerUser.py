@@ -249,4 +249,4 @@ conn.close()
 
 # Start het eerstvolgende bestand.
 
-exec(open('RecommendPerProduct.py').read())
+exec(open('table_profile_recommendations.py').read())

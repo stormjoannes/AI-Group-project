@@ -4,7 +4,7 @@ db = create_connection()
 cur = db[0]
 conn = db[1]
 tijd = time.time()
-print("\n### RecommendPerProduct.py ###\n")
+print("\n### RecommendPerProduct_names.py ###\n")
 def vergelijking(naam):
     naam = naam[0]
     if naam:
@@ -227,3 +227,5 @@ conn.close()
 eind = time.time()
 print('tijd:')
 print(eind-tijd)
+
+exec(open('gender-discount_per_user.py').read())

@@ -5,6 +5,8 @@ db = create_connection()
 cur = db[0]
 conn = db[1]
 
+print("\n### gender-discount_per_user.py ###\n")
+
 cur.execute("DROP TABLE IF EXISTS all_prof_rec;")  # Verwijderd de table die ik ga aanmaken als de table al bestaat, zo voorkom ik errors.
 
 cur.execute("CREATE TABLE all_prof_rec (id_ varchar PRIMARY KEY, "            # hier create ik mijn table.

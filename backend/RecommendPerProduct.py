@@ -3,7 +3,7 @@ from backend.create_connnection import create_connection
 db = create_connection()
 cur = db[0]
 conn = db[1]
-print("\n### RecommendPerProduct.py ###\n")
+print("\n### RecommendPerProduct_names.py ###\n")
 
 
 def get_subcatrec(name):

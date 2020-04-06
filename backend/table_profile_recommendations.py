@@ -4,7 +4,7 @@ db = create_connection()
 cur = db[0]
 conn = db[1]
 
-print("\n### RecommendedPerUser.py ###\n")
+print("\n### table_profile_recommendations.py ###\n")
 
 # Maakt tabel met data van views per product uit tabel products.
 
@@ -26,4 +26,4 @@ conn.close()
 
 # Start het eerstvolgende bestand.
 
-exec(open('RecommendPerProduct.py').read())
+exec(open('RecommendPerProduct_names.py').read())
