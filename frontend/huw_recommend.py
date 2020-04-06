@@ -40,7 +40,7 @@ class Recom(Resource):
         prodids = []
 
         if page == 'category':
-            query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
+            query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend, subsubcatrecommend_2 FROM profile_recommendations WHERE id = %s"""
             data = cur.execute(query, (profileid, ))
         elif page == 'detail':
             query = """SELECT catrecommend, subcatrecommend, subsubcatrecommend, namerecommend FROM products WHERE id = %s"""

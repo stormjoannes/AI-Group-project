@@ -72,9 +72,12 @@ def vergelijking(naam):
                     recs[3] = recordid
             else:
                 break
-        cur.execute("UPDATE products SET catrecommend = '{}', subcatrecommend = '{}', "
-                    "subsubcatrecommend = '{}', namerecommend = '{}' "
-                    "WHERE name = '{}'".format(recs[0], recs[1], recs[2], recs[3], naam))
+        execute = "UPDATE products SET catrecommend = %s, subcatrecommend = %s, subsubcatrecommend = %s, namerecommend = %s WHERE name = %s"
+        cur.execute(execute, (recs[0], recs[1], recs[2], recs[3], naam))
+        # cur.execute("UPDATE products SET catrecommend = '{}', subcatrecommend = '{}', "
+        #             "subsubcatrecommend = '{}', namerecommend = '{}' "
+        #             "WHERE name = '{}'".format(recs[0], recs[1], recs[2], recs[3], naam))
+
 print("Setting up tables...")
 # Maakt tabel met data van views per product uit tabel products.
 cur.execute("DROP TABLE IF EXISTS valuesproducts")

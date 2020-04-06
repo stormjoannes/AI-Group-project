@@ -27,6 +27,7 @@ cur.execute("CREATE TABLE popular_categorys_per_user AS (select id, mostusedcat,
 cur.execute("ALTER TABLE popular_categorys_per_user ADD catrecommend varchar")
 cur.execute("ALTER TABLE popular_categorys_per_user ADD subcatrecommend varchar")
 cur.execute("ALTER TABLE popular_categorys_per_user ADD subsubcatrecommend varchar")
+cur.execute("ALTER TABLE popular_categorys_per_user ADD subsubcatrecommend_2 varchar")
 
 conn.commit()
 
@@ -211,32 +212,35 @@ for i in range(len(subsubcategorys)):
 for i in range(len(subsubcatrecs)):
     if subsubcatrecs[i][1]:
         if subsubcatrecs[i][0] != 'None':
-            for j in range(3):
-                cur.execute("UPDATE popular_categorys_per_user SET subsubcatrecommend = '{}' "
-                            "WHERE mostusedsubsubcat = '{}' "
-                            "and subcatrecommend != '{}' "
-                            "and catrecommend != '{}' "
-                            "and subsubcatrecommend is null".format(subsubcatrecs[i][1][j][0], subsubcatrecs[i][0],
-                                                                    subsubcatrecs[i][1][j][0],
-                                                                    subsubcatrecs[i][1][j][0]))
+            cur.execute("UPDATE popular_categorys_per_user SET subsubcatrecommend = '{}' "
+                        "WHERE mostusedsubsubcat = '{}' "
+                        "and subcatrecommend != '{}' "
+                        "and catrecommend != '{}' "
+                        "and subsubcatrecommend is null".format(subsubcatrecs[i][1][0][0], subsubcatrecs[i][0],
+                                                                subsubcatrecs[i][1][0][0],
+                                                                subsubcatrecs[i][1][0][0]))
+
+            cur.execute("UPDATE popular_categorys_per_user SET subsubcatrecommend_2 = '{}' "
+                        "WHERE mostusedsubsubcat = '{}' "
+                        "and subcatrecommend != '{}' "
+                        "and catrecommend != '{}' "
+                        "and subsubcatrecommend_2 is null".format(subsubcatrecs[i][1][2][0], subsubcatrecs[i][0],
+                                                                subsubcatrecs[i][1][2][0],
+                                                                subsubcatrecs[i][1][2][0]))
 
 for i in range(2):
+    print(defaultsubsubcatrec, '1')
     cur.execute("UPDATE popular_categorys_per_user SET subsubcatrecommend = '{}' "
                 "WHERE subsubcatrecommend is null "
                 "and catrecommend != '{}' "
-                "and subcatrecommend != '{}'".format(defaultsubsubcatrec[i][0], defaultsubsubcatrec[i][0],
-                                                     defaultsubsubcatrec[i][0]))
+                "and subcatrecommend != '{}'".format(defaultsubsubcatrec[0][0], defaultsubsubcatrec[0][0],
+                                                     defaultsubsubcatrec[0][0]))
 
-print("Creating table with recommendations per user...")
-
-# Maakt tabel met recommendations per profiel uit tabel popular_categorys_per_user.
-
-cur.execute("DROP TABLE IF EXISTS profile_recommendations")
-
-cur.execute("CREATE TABLE profile_recommendations AS (select id, catrecommend, subcatrecommend, subsubcatrecommend "
-            "from popular_categorys_per_user)")
-
-print("Recommendations created for user!")
+    cur.execute("UPDATE popular_categorys_per_user SET subsubcatrecommend_2 = '{}' "
+                "WHERE subsubcatrecommend is null "
+                "and catrecommend != '{}' "
+                "and subcatrecommend != '{}'".format(defaultsubsubcatrec[1][0], defaultsubsubcatrec[1][0],
+                                                     defaultsubsubcatrec[1][0]))
 
 conn.commit()
 
