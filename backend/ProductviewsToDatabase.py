@@ -5,144 +5,168 @@ cur = db[0]
 conn = db[1]
 
 print("\n### ProductviewsToDatabase.py ###\n")
-
 invoer = 'AllUsedCategorys'
 inv = open(invoer, 'r')
 
 read = inv.readlines()
 
-# Haalt data van alle categorys van alle profielen uit het .txt bestand.
 
-data = []
-for i in range(len(read)):
-    current_data = eval(read[i])
-    data.append(current_data)
+def count_objects_frame():
+    # Haalt data van alle categorys van alle profielen uit het .txt bestand.
 
-inv.close()
+    data = []
+    for i in range(len(read)):
+        current_data = eval(read[i])
+        data.append(current_data)
 
-print("Counting categorys...")
+    inv.close()
 
-# Telt hoe vaak een category is bekeken.
+    print("Counting categorys...")
 
-categorycount = []
-categorys = list(set(data[0][1]))
-for i in range(len(categorys)):
-    print("\rCounted {} of {} categorys".format(i + 1, len(categorys)), end="")
-    currentcount = [(data[0][1].count(categorys[i])), categorys[i]]
-    categorycount.append(currentcount)
+    # Telt hoe vaak een category is bekeken.
 
-categorycount.sort(reverse=True)
+    categorycount = []
+    categorys = list(set(data[0][1]))
+    for i in range(len(categorys)):
+        print("\rCounted {} of {} categorys".format(i + 1, len(categorys)), end="")
+        currentcount = [(data[0][1].count(categorys[i])), categorys[i]]
+        categorycount.append(currentcount)
 
-print("\nCounting subcategorys...")
+    categorycount.sort(reverse=True)
 
-# Telt hoe vaak een subcategory is bekeken.
+    print("\nCounting subcategorys...")
 
-subcategorycount = []
-subcategorys = list(set(data[1][1]))
-for i in range(len(subcategorys)):
-    print("\rCounted {} of {} subcategorys".format(i + 1, len(subcategorys)), end="")
-    currentcount = [(data[1][1].count(subcategorys[i])), subcategorys[i]]
-    subcategorycount.append(currentcount)
+    # Telt hoe vaak een subcategory is bekeken.
 
-subcategorycount.sort(reverse=True)
+    subcategorycount = []
+    subcategorys = list(set(data[1][1]))
+    for i in range(len(subcategorys)):
+        print("\rCounted {} of {} subcategorys".format(i + 1, len(subcategorys)), end="")
+        currentcount = [(data[1][1].count(subcategorys[i])), subcategorys[i]]
+        subcategorycount.append(currentcount)
 
-print("\nCounting subsubcategorys...")
+    subcategorycount.sort(reverse=True)
 
-# Telt hoe vaak een subsubcategory is bekeken.
+    print("\nCounting subsubcategorys...")
 
-subsubcategorycount = []
-subsubcategorys = list(set(data[2][1]))
-for i in range(len(subsubcategorys)):
-    print("\rCounted {} of {} subsubcatagorys".format(i + 1, len(subsubcategorys)), end="")
-    currentcount = [(data[2][1].count(subsubcategorys[i])), subsubcategorys[i]]
-    subsubcategorycount.append(currentcount)
+    # Telt hoe vaak een subsubcategory is bekeken.
 
-subsubcategorycount.sort(reverse=True)
+    subsubcategorycount = []
+    subsubcategorys = list(set(data[2][1]))
+    for i in range(len(subsubcategorys)):
+        print("\rCounted {} of {} subsubcatagorys".format(i + 1, len(subsubcategorys)), end="")
+        currentcount = [(data[2][1].count(subsubcategorys[i])), subsubcategorys[i]]
+        subsubcategorycount.append(currentcount)
 
-print("\nCounting names...")
+    subsubcategorycount.sort(reverse=True)
 
-# Telt hoe vaak elk product is bekeken.
+    print("\nCounting names...")
 
-namescount = []
-names = list(set(data[3][1]))
-for i in range(len(names)):
-    print("\rCounted {} of {} names".format(i + 1, len(names)), end="")
-    currentcount = [(data[3][1].count(names[i])), names[i]]
-    namescount.append(currentcount)
+    # Telt hoe vaak elk product is bekeken.
 
-namescount.sort(reverse=True)
+    namescount = []
+    names = list(set(data[3][1]))
+    for i in range(len(names)):
+        print("\rCounted {} of {} names".format(i + 1, len(names)), end="")
+        currentcount = [(data[3][1].count(names[i])), names[i]]
+        namescount.append(currentcount)
 
-print("\nAltering Tables...")
+    namescount.sort(reverse=True)
 
-# Voegt kolommen toe aan products waar de data van het tellen in kan worden gezet.
+    # vanaf hier ga je de andere tables runnen en de informatie uit deze functie halen
+    fix_table()
+    category(categorycount)
+    subcategory(subcategorycount)
+    subsubcategory(subsubcategorycount)
+    names_exp(namescount)
 
-cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS categoryviews")
-cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS subcategoryviews")
-cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS subsubcategoryviews")
-cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS productviews")
 
-cur.execute("ALTER TABLE products ADD categoryviews integer")
-cur.execute("ALTER TABLE products ADD subcategoryviews integer")
-cur.execute("ALTER TABLE products ADD subsubcategoryviews integer")
-cur.execute("ALTER TABLE products ADD productviews integer")
+def fix_table():
+    print("\nAltering Tables...")
 
-conn.commit()
+    # Voegt kolommen toe aan products waar de data van het tellen in kan worden gezet.
 
-print("Exporting data...")
+    cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS categoryviews")
+    cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS subcategoryviews")
+    cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS subsubcategoryviews")
+    cur.execute("ALTER TABLE products DROP COLUMN IF EXISTS productviews")
 
-# Zet de teldata van alle categorys in de kolom bij producten met dezelfde category.
+    cur.execute("ALTER TABLE products ADD categoryviews integer")
+    cur.execute("ALTER TABLE products ADD subcategoryviews integer")
+    cur.execute("ALTER TABLE products ADD subsubcategoryviews integer")
+    cur.execute("ALTER TABLE products ADD productviews integer")
 
-for i in range(len(categorycount)):
-    name = categorycount[i][1]
-    if name is not None:
-        if "'" in name:
-            name = name.split("'")
-            name = name[0] + "''" + name[1]
-        cur.execute("UPDATE products SET categoryviews={} WHERE category='{}'".format(categorycount[i][0], name))
-    else:
-        cur.execute("UPDATE products SET categoryviews={} WHERE category='{}'".format(categorycount[i][0], name))
+    conn.commit()
 
-# Zet de teldata van alle subcategorys in de kolom bij producten met dezelfde subcategory.
 
-for i in range(len(subcategorycount)):
-    name = subcategorycount[i][1]
-    if name is not None:
-        if "'" in name:
-            name = name.split("'")
-            name = name[0] + "''" + name[1]
-        cur.execute(
-            "UPDATE products SET subcategoryviews={} WHERE subcategory='{}'".format(subcategorycount[i][0], name))
-    else:
-        cur.execute(
-            "UPDATE products SET subcategoryviews={} WHERE subcategory='{}'".format(subcategorycount[i][0], name))
+def category(categorycount):
+    print("Exporting data from category...")
 
-# Zet de teldata van alle subsubcategorys in de kolom bij producten met dezelfde subsubcategory.
+    # Zet de teldata van alle categorys in de kolom bij producten met dezelfde category.
 
-for i in range(len(subsubcategorycount)):
-    name = subsubcategorycount[i][1]
-    if name is not None:
-        if "'" in name:
-            name = name.split("'")
-            name = name[0] + "''" + name[1]
-        cur.execute(
-            "UPDATE products SET subsubcategoryviews={} WHERE subsubcategory='{}'".format(subsubcategorycount[i][0],
-                                                                                          name))
-    else:
-        cur.execute(
-            "UPDATE products SET subsubcategoryviews={} WHERE subsubcategory='{}'".format(subsubcategorycount[i][0],
-                                                                                          name))
+    for i in range(len(categorycount)):
+        name = categorycount[i][1]
+        if name is not None:
+            if "'" in name:
+                name = name.split("'")
+                name = name[0] + "''" + name[1]
+            cur.execute("UPDATE products SET categoryviews={} WHERE category='{}'".format(categorycount[i][0], name))
+        else:
+            cur.execute("UPDATE products SET categoryviews={} WHERE category='{}'".format(categorycount[i][0], name))
 
-# Zet de teldata van alle producten in de kolom bij producten met dezelfde naam.
+    # Zet de teldata van alle subcategorys in de kolom bij producten met dezelfde subcategory.
 
-for i in range(len(namescount)):
-    name = namescount[i][1]
-    if name is not None:
-        if "'" in name:
-            name = name.split("'")
-            name = name[0] + "''" + name[1]
-        cur.execute("UPDATE products SET productviews={} WHERE name='{}'".format(namescount[i][0], name))
-    else:
-        cur.execute("UPDATE products SET productviews={} WHERE name='{}'".format(namescount[i][0], name))
+
+def subcategory(subcategorycount):
+    print("Exporting data from subcategory...")
+    for i in range(len(subcategorycount)):
+        name = subcategorycount[i][1]
+        if name is not None:
+            if "'" in name:
+                name = name.split("'")
+                name = name[0] + "''" + name[1]
+            cur.execute(
+                "UPDATE products SET subcategoryviews={} WHERE subcategory='{}'".format(subcategorycount[i][0], name))
+        else:
+            cur.execute(
+                "UPDATE products SET subcategoryviews={} WHERE subcategory='{}'".format(subcategorycount[i][0], name))
+
+    # Zet de teldata van alle subsubcategorys in de kolom bij producten met dezelfde subsubcategory.
+
+
+def subsubcategory(subsubcategorycount):
+    print("Exporting data from subsubcategory...")
+    for i in range(len(subsubcategorycount)):
+        name = subsubcategorycount[i][1]
+        if name is not None:
+            if "'" in name:
+                name = name.split("'")
+                name = name[0] + "''" + name[1]
+            cur.execute(
+                "UPDATE products SET subsubcategoryviews={} WHERE subsubcategory='{}'".format(subsubcategorycount[i][0],
+                                                                                              name))
+        else:
+            cur.execute(
+                "UPDATE products SET subsubcategoryviews={} WHERE subsubcategory='{}'".format(subsubcategorycount[i][0],
+                                                                                              name))
+
+
+def names_exp(namescount):
+    print("Exporting data from names...")
+    # Zet de teldata van alle producten in de kolom bij producten met dezelfde naam.
+
+    for i in range(len(namescount)):
+        name = namescount[i][1]
+        if name is not None:
+            if "'" in name:
+                name = name.split("'")
+                name = name[0] + "''" + name[1]
+            cur.execute("UPDATE products SET productviews={} WHERE name='{}'".format(namescount[i][0], name))
+        else:
+            cur.execute("UPDATE products SET productviews={} WHERE name='{}'".format(namescount[i][0], name))
+
+
+count_objects_frame()
 
 print("Data exported!")
 

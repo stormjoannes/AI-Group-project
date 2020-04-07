@@ -5,7 +5,7 @@ db = create_connection()
 cur = db[0]
 conn = db[1]
 
-print("\n### RecommendedPerUser.py ###\n")
+print("\n\n### RecommendedPerUser.py ###\n")
 
 print("Setting up tables...")
 
