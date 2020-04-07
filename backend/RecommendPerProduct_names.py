@@ -1,5 +1,6 @@
 import time
-from backend.create_connnection import create_connection
+from create_connnection import create_connection
+
 db = create_connection()
 cur = db[0]
 conn = db[1]
