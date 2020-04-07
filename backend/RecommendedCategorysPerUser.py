@@ -85,7 +85,7 @@ def fix_table():
 
 def cat_favo(favsperuser):
     # Voegt data van favoriete category, subcategory en subsubcategory bij bijbehorende profiel.
-    print('Adding favorite category...')
+    print('Adding favorite per user...')
     for i in range(len(favsperuser)):
         print("\r{} of {} in table...".format(i + 1, len(favsperuser)), end="")
         catname = favsperuser[i][1][0]
@@ -96,11 +96,10 @@ def cat_favo(favsperuser):
             cur.execute("UPDATE profiles SET mostusedcat='{}' WHERE id='{}'".format(catname, favsperuser[i][0]))
         else:
             cur.execute("UPDATE profiles SET mostusedcat='{}' WHERE id='{}'".format(catname, favsperuser[i][0]))
-    subcat_favo(favsperuser, i)
+        subcat_favo(favsperuser, i)
 
 
 def subcat_favo(favsperuser, i):
-    print('Adding favorite subcategory...')
     subcatname = favsperuser[i][1][1]
     if subcatname is not None:
         if "'" in subcatname:
@@ -112,7 +111,6 @@ def subcat_favo(favsperuser, i):
     subsubcat_favo(favsperuser, i)
 
 def subsubcat_favo(favsperuser, i):
-    print('Adding favorite subsubcategory...')
     subsubcatname = favsperuser[i][1][2]
     if subsubcatname is not None:
         if "'" in subsubcatname:

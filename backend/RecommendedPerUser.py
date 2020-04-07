@@ -205,7 +205,7 @@ def subsubcategory_recommend(subsubcategorys, defaultsubsubcatrec):
                 subsubcatrecs.append([name, fetch])
 
     for i in range(len(subsubcatrecs)):
-        print("\rRendering profile subsub- en subsub_2recommendations: {} from 216....".format(i), end='')
+        print("\rRendering profile subsub- en subsub_2-recommendations: {} from 216....".format(i), end='')
         if subsubcatrecs[i][1]:
             if subsubcatrecs[i][0] != 'None':
                 for j in range(0, 6):

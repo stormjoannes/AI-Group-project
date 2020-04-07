@@ -37,8 +37,6 @@ def write_data(data):
     # Daarnaast zit er code in die maar max 1 profiel per keer converteerd, om zo het programma een beetje snel te houden.
 
     for j in range(len(data)):
-        if j == 10000:
-            break
         print("\rFormatting {} of {}...".format(j+1, len(data)), end="")
         if len(profids) > 1:
             uit.write('{}\n'.format(profids[0]))
