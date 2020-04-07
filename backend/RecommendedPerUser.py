@@ -1,4 +1,4 @@
-from backend.create_connnection import create_connection
+from create_connnection import create_connection
 import random
 
 db = create_connection()
