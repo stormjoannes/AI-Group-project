@@ -248,5 +248,4 @@ cur.close()
 conn.close()
 
 # Start het eerstvolgende bestand.
-
 exec(open('table_profile_recommendations.py').read())

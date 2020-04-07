@@ -132,5 +132,4 @@ cur.close()
 conn.close()
 
 # Start het eerstvolgende bestand.
-
 exec(open('RecommendedPerUser.py').read())
