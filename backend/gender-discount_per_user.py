@@ -63,6 +63,10 @@ def recommended(targ_prod, best_deal):
         exe = """select id from products where targetaudience LIKE %s LIMIT 10"""
         cur.execute(exe, (targ_prod,))
         all_rec = cur.fetchall()
+        if len(all_rec) < 4:
+            exe = """select id from products where deal LIKE %s LIMIT 10"""
+            cur.execute(exe, (best_deal,))
+            all_rec = cur.fetchall()
     return all_rec
 
 def most_common(list):
