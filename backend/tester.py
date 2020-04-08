@@ -1,129 +1,61 @@
+import random
 from create_connnection import create_connection
-import psycopg2
 
 db = create_connection()
 cur = db[0]
 conn = db[1]
 
-# def homepage_algoritme_test(profileid):
-#     hompage_test1 = """SELECT catrecommend FROM profile_recommendations WHERE id = %s"""
-#     cur.execute(hompage_test1)
-#     ((test1,),) = cur.fetchall()
-#     hompage_test1 = """SELECT category FROM products WHERE id = %s"""
-#     cur.execute(hompage_test1(test1))
-#     test1 = cur.fetchall()
-#     hompage_catrecommend = """SELECT category FROM products WHERE id = %s"""
-#     cur.execute(hompage_catrecommend)
-#     hompage_catrecommend = cur.fetchall()
-#
-#
-#     hompage_test2 = """SELECT subcatrecommend FROM profile_recommendations WHERE id = %s"""
-#     cur.execute(hompage_test2)
-#     ((test2,),) = cur.fetchall()
-#     hompage_sub = """SELECT subcategory FROM products WHERE id = %s"""
-#     cur.execute(hompage_test1)
-#     hompage_subcatrecommend = """SELECT subcategory FROM products WHERE id = %s"""
-#     cur.execute(hompage_subcatrecommend)
-#
-#
-#     hompage_test3 = """SELECT subsubcatrecommend FROM profile_recommendations WHERE id = %s"""
-#     cur.execute(hompage_test3)
-#     ((test3,),) = cur.fetchall()
-#     hompage_subcatrecommend = """SELECT subsubcategory FROM products WHERE id = %s"""
-#     cur.execute(hompage_subcatrecommend)
-#
-#
-#     hompage_test4 = """SELECT subsubcatrecommend_2 FROM profile_recommendations WHERE id = %s"""
-#     cur.execute(hompage_test4)
-#     ((test4,),) = cur.fetchall()
-#     hompage_subcatrecommend_2 = """SELECT subsubcategory FROM products WHERE id = %s"""
-#     cur.execute(hompage_subcatrecommend_2)
-#
-#
-#     return
-#
-#
-# homepage_algoritme_test(profileid)
+print("\n### tester.py ###\n")
+
+def get_inf():
+    cur.execute("select * from profile_recommendations;")
+    all = cur.fetchall()
+    rand_choice = []
+    while len(rand_choice) < 20000:
+        rand = random.choice(all)
+        if rand not in rand_choice:
+            rand_choice.append(rand)
+    check_all(rand_choice)
 
 
-# def target_audience_deal_algoritme_test():
-#     #Verglijkt deal en targetaudience van
-#     target_test1 = """SELECT recommendation_1 FROM all_prof_rec WHERE id_ = '5a70719a06d25200017b8437'"""
-#     cur.execute(target_test1)
-#     ((test1,),) = cur.fetchall()
-#     print(type)
-#     target_deal1 = """SELECT targetaudience,targdeal FROM products WHERE id = %s"""%(test1)
-#     cur.execute(target_deal1)
-#
-#
-#     # Verglijkt deal en targetaudience van
-#     target_test2 = """SELECT recommendation_2 FROM all_prof_rec WHERE id_ = '5a70719a06d25200017b8437'"""
-#     cur.execute(target_test2)
-#     ((test2,),) = cur.fetchall()
-#     target_deal2 = """SELECT targetaudience,deal FROM products WHERE id = %s"""%(test2)
-#     cur.execute(target_deal2)
-#
-#
-#     # Verglijkt deal en targetaudience van
-#     target_test3 = """SELECT recommendation_3 FROM all_prof_rec WHERE id_ = '5a70719a06d25200017b8437'"""
-#     cur.execute(target_test3)
-#     ((test3,),) = cur.fetchall()
-#     target_deal3 = """SELECT targetaudience,deal FROM products WHERE id = %s"""%(test3)
-#     cur.execute(target_deal3)
-#
-#
-#     # Verglijkt deal en targetaudience van
-#     target_test4 = """SELECT recommendation_4 FROM all_prof_rec WHERE id_ = '5a70719a06d25200017b8437'"""
-#     cur.execute(target_test4)
-#     ((test,),) = cur.fetchall()
-#     target_deal4 = """SELECT targetaudience,deal FROM products WHERE id = %s"""%(test4)
-#     cur.execute(target_deal4)
-#
-#     return
-#
-#
-# target_audience_deal_algoritme_test()
+def check_all(rand_choice):
+    true = 0
+    false = 0
+    for i in range(0, len(rand_choice)):
+        id = "'" + rand_choice[i][0] + "'"
+        cur.execute(f"""SELECT mostusedcat, mostusedsubcat, mostusedsubsubcat from profiles where id like {id};""")
+        uitk = cur.fetchall()
+        uitk = uitk[0]
+        if None not in uitk and 'None' not in uitk:
+            ca = "'" + rand_choice[i][1] + "'"
+            subca = "'" + rand_choice[i][2] + "'"
+            subsubca = "'" + rand_choice[i][2] + "'"
+            cur.execute(f"SELECT category from products where id like {ca};")
+            cat = cur.fetchall()
+            cur.execute(f"""SELECT subcategory from products where id like {subca}""")
+            subcat = cur.fetchall()
+            cur.execute(f"""SELECT subsubcategory from products where id like {subsubca}""")
+            subsubcat = cur.fetchall()
+            rec_cats = (cat[0][0], subcat[0][0])
+            if None not in rec_cats and 'None' not in uitk:
+                if rec_cats[0] == uitk[0] and rec_cats[1] == uitk[1]:
+                    true += 1
+                else:
+                    print('\n')
+                    print(uitk)
+                    print(rec_cats)
+                    false += 1
+            else:
+                continue
+        else:
+            continue
+
+    print(true, ' are true')
+    print(false, ' are false')
 
 
-def product_specifieke_algoritme_test(self, prodid):
-    # verglijkt de category van het product op de pagina en het product van de recommendation.
-    product_test1 = """SELECT catrecommend FROM products WHERE id = %S""" % (prodid)
-    cur.execute(product_test1)
-    ((test1,),) = cur.fetchall()
-    cat = """SELECT category FROM products WHERE id = %s""" % (test1)
-    cur.execute(cat)
-    verglijk1 = """SELECT category FROM products WHERE id = '28846'""" % (prodid)
-    cat == verglijk1
+get_inf()
 
-    # verglijkt de subategory van het product op de pagina en het product van de recommendation.
-    product_test2 = """SELECT subcatrecommend FROM products WHERE id = %s""" % (prodid)
-    cur.execute(product_test2)
-    ((test2,),) = cur.fetchall()
-    subcat = """SELECT subcategory FROM products WHERE id = %s""" % (test2)
-    cur.execute(subcat)
-    verglijk2 = """SELECT category FROM products WHERE id = %S""" % (prodid)
-    print(subcat == verglijk2)
-
-    # verglijkt de subsubcategory van het product op de pagina en het product van de recommendation.
-    product_test3 = """SELECT subsubcatrecommend FROM products WHERE id = %S""" % (prodid)
-    cur.execute(product_test3)
-    ((test3,),) = cur.fetchall()
-    subsubcat = """SELECT subsubcategory FROM products WHERE id = %s""" % (test3)
-    cur.execute(subsubcat)
-    verglijk3 = """SELECT category FROM products WHERE id = %s""" % (prodid)
-    print(subsubcat == verglijk3)
-
-    # verglijkt de subsubcategory van het product op de pagina en het product van de tweede recommendation.
-    product_test4 = """SELECT namerecommend FROM products WHERE id = %S""" % (prodid)
-    cur.execute(product_test4)
-    ((test4,),) = cur.fetchall()
-    subsubcat2 = """SELECT namerecommend FROM products WHERE id = %s""" % (test4)
-    cur.execute(subsubcat2)
-    verglijk4 = """SELECT category FROM products WHERE id = %s""" % (prodid)
-    print(subsubcat2 == verglijk4)
-    return
-
-
-product_specifieke_algoritme_test(prodid)
-
-product_specifieke_algoritme_test()
+# Hier sluit ik de communicatie met de database
+cur.close()
+conn.close()
