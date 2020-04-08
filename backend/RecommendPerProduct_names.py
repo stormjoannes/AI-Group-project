@@ -272,4 +272,4 @@ def create_recordings():
 
 create_recordings()
 
-# exec(open('gender-discount_per_user.py').read())
+exec(open('gender-discount_per_user.py').read())
