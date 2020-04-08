@@ -23,5 +23,5 @@ if it doesn't work try following the readme at [gitlab](https://gitlab.com/hu-hb
 
 ### How to create recommendations
 
-1. To get the CSV files and the in the database run the file 'MongoDB products to CSV.py' and wait till it finishes
-2. To get the recommendations run the file 'FetchCode.py' and wait till it finishes
+1. To get the CSV files and the in the database run the file 'MongoDB products to CSV.py' in 'backend/csv' and wait till it finishes
+2. To get the recommendations run the file 'FetchCode.py' in 'backend' and wait till it finishes
