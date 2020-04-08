@@ -6,6 +6,8 @@ import pandas
 
 import datetime
 
+print("\n### MongoDB sessions to CSV.py ###\n")
+
 # build a new client instance of MongoClient
 mongo_client = MongoClient('localhost', 27017)
 
@@ -122,3 +124,4 @@ docs = docs.rename(columns={'_id': 'id', 'has_sale': 'sale', 'session_start': 's
 
 docs.to_csv('sessions.csv', index=False)
 
+exec(open("postgreSQL setup.py").read())
