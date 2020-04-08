@@ -4,6 +4,8 @@ from pymongo import MongoClient
 # import the Pandas library
 import pandas
 
+print("\n### MongoDB profiles to CSV.py ###\n")
+
 # build a new client instance of MongoClient
 mongo_client = MongoClient('localhost', 27017)
 
@@ -36,3 +38,5 @@ docs.head()
 docs = docs.rename(columns={'_id': 'id', 'latest_activity': 'latestactivity', 'recommendations.segment': 'segment'})
 
 docs.to_csv('profiles.csv', index=False)
+
+exec(open("MongoDB profiles_previously_viewed to CSV.py").read())

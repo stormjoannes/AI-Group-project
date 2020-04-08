@@ -5,7 +5,7 @@ import psycopg2
 
 def create_connection():
     try:
-        conn = psycopg2.connect("dbname=Onlinestore user=postgres password=postgres")
+        conn = psycopg2.connect("dbname=Onlinestore user=postgres password=0Ksndjskxw")
         cur = conn.cursor()
         # return two values so I can close them both at the end
         return cur, conn

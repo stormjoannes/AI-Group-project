@@ -4,6 +4,8 @@ from pymongo import MongoClient
 # import the Pandas library
 import pandas
 
+print("\n### MongoDB products to CSV.py ###\n")
+
 # build a new client instance of MongoClient
 mongo_client = MongoClient('localhost', 27017)
 
@@ -41,4 +43,8 @@ docs = docs.rename(columns={'_id': 'id', 'properties.soort': 'type', 'sub_catego
                             'price.mrsp': 'mrsp', 'price.discount': 'discount', 'price.selling_price': 'sellingprice',
                             'properties.discount': 'deal'})
 
+docs = docs.astype({'mrsp': 'int'}).dtypes
+
 docs.to_csv('products.csv', index=False)
+
+# exec(open("MongoDB profiles to CSV.py").read())
