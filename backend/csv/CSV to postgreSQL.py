@@ -3,8 +3,6 @@ from backend.create_connnection import create_connection
 print("\n### CSV to postgreSQL.py ###\n")
 
 db = create_connection()
-cur = db[0]
-conn = db[1]
 c = db[1]
 cur = db[0]
 
