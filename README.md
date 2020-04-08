@@ -20,3 +20,8 @@ if it doesn't work try following the readme at [gitlab](https://gitlab.com/hu-hb
 1. Go to the folder 'backend'
 2. Go to the file 'create_connection'
 3. Edit the connection values so that it can connect to your database
+
+### How to create recommendations
+
+1. To get the CSV files and the in the database run the file 'MongoDB products to CSV.py' in 'backend/csv' and wait till it finishes
+2. To get the recommendations run the file 'FetchCode.py' in 'backend' and wait till it finishes
