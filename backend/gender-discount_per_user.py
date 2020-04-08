@@ -19,7 +19,7 @@ def base():
     all = all_inf()
     all_profid = all[0]
     all_prodid = all[1]
-    for i in range(820000, len(all_profid)):
+    for i in range(0, len(all_profid)):
         print("\rRendering profile recommendations: {} from 2081649....".format(i), end='')
         executer = """select deal, targetaudience from products where id = %s or id = %s or id = %s;"""
         cur.execute(executer, (all_prodid[i][0], all_prodid[i][1], all_prodid[i][2],))
@@ -37,7 +37,6 @@ def base():
         rand_choice = recommended(targ_prod, best_deal)
         random.shuffle(rand_choice)
         all_rand_choice = rand_choice[0:4]
-        print(all_rand_choice)
         cur.execute("INSERT INTO all_prof_rec (id_, "
                     "recommendation_1, "
                     "recommendation_2, "
