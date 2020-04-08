@@ -75,11 +75,9 @@ def vergelijking(naam):
                     recs[3] = recordid
             else:
                 break
-        execute = "UPDATE products SET catrecommend = %s, subcatrecommend = %s, subsubcatrecommend = %s, namerecommend = %s WHERE name = %s"
-        cur.execute(execute, (recs[0], recs[1], recs[2], recs[3], naam))
-        # cur.execute("UPDATE products SET catrecommend = '{}', subcatrecommend = '{}', "
-        #             "subsubcatrecommend = '{}', namerecommend = '{}' "
-        #             "WHERE name = '{}'".format(recs[0], recs[1], recs[2], recs[3], naam))
+        cur.execute("UPDATE products SET catrecommend = '{}', subcatrecommend = '{}', "
+                    "subsubcatrecommend = '{}', namerecommend = '{}' "
+                    "WHERE name = '{}'".format(recs[0], recs[1], recs[2], recs[3], naam))
 
 
 def setup_tables():
@@ -98,6 +96,9 @@ def setup_tables():
     cur.execute("ALTER TABLE products ADD subsubcatrecommend varchar")
     cur.execute("ALTER TABLE products ADD namerecommend varchar")
     conn.commit()
+
+
+def get_data():
     print("Getting data...")
     # Haalt alle categorys op en zorgt ervoor dat er maar 1 van elk in de lijst staat.
     cur.execute("select category from products")
@@ -119,8 +120,8 @@ def catrecordings():
     # Haalt recommendations per category op aan de hand van categoryviews,
     # en zet deze in products bij de juiste categorys.
     # Daarnaast zet hij in de lege velden het meest overal bekeken product op basis van meest bekeken category.
-    tables = setup_tables()
-    categorys =tables[0]
+    tables = get_data()
+    categorys = tables[0]
     catrecs = []
     for i in range(len(categorys)):
         if categorys[i][0]:
@@ -157,7 +158,7 @@ def subcatrecordings():
     # en zet deze in products bij de juiste subcategorys.
     # Daarnaast zet hij in de lege velden het meest overal bekeken product op basis van meest bekeken subcategory.
 
-    tables = setup_tables()
+    tables = get_data()
     subcategorys = tables[1]
     subcatrecs = []
     for i in range(len(subcategorys)):
@@ -166,8 +167,8 @@ def subcatrecordings():
             if "'" in name:
                 currentsubcat = name.split("'")
                 name = "''".join(map(str, currentsubcat))
-            cur.execute("select id from valuesproducts where subsubcategoryviews is not null and "
-                        "productviews is not null and subsubcategory = '{}'"
+            cur.execute("select id from valuesproducts where subcategoryviews is not null and "
+                        "productviews is not null and subcategory = '{}'"
                         "order by categoryviews desc, subcategoryviews desc, "
                         "subsubcategoryviews desc, productviews desc "
                         "limit 3".format(name))
@@ -196,7 +197,7 @@ def subsubcatrecordings():
     # Haalt recommendations per subsubcategory op aan de hand van subsubcategoryviews,
     # en zet deze in products bij de juiste subsubcategorys.
     # Daarnaast zet hij in de lege velden het meest overal bekeken product op basis van meest bekeken subsubcategory.
-    tables = setup_tables()
+    tables = get_data()
     subsubcategorys = tables[2]
     subsubcatrecs = []
     for i in range(len(subsubcategorys)):
@@ -259,6 +260,7 @@ def namerecordings():
 
 
 def create_recordings():
+    setup_tables()
     catrecordings()
     subcatrecordings()
     subsubcatrecordings()
@@ -270,4 +272,4 @@ def create_recordings():
 
 create_recordings()
 
-exec(open('gender-discount_per_user.py').read())
+# exec(open('gender-discount_per_user.py').read())
